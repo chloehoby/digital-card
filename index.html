@@ -341,7 +341,7 @@
 
       <div class="identity">
         <h1 class="name">Serene Ho</h1>
-        <p class="role"><strong>Director</strong> — BYT HVAC SOLUTIONS S/B</p>
+        <p class="role"><strong>Director — BYT HVAC SOLUTIONS S/B</strong></p>
       </div>
 
       <div class="stat-chip">
@@ -360,8 +360,8 @@
           </svg>
         </span>
         <span class="stat-text">
-          <span class="stat-value" id="statValue">34.6°C</span>
-          <span class="stat-label">Avg cold-aisle inlet</span>
+          <span class="stat-value" id="statValue">Puchong</span>
+          <span class="stat-label">Selangor</span>
         </span>
       </div>
 
@@ -469,36 +469,6 @@
             label.textContent = defaultLabel;
           }, 2200);
         });
-
-        // One deliberate load-time moment: the stat counts down from an
-        // ambient temp to the cooled target, echoing what the product does.
-        var statEl = document.getElementById("statValue");
-        var reduceMotion = window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches;
-        var target = 18.2;
-
-        if (reduceMotion) {
-          statEl.textContent = target.toFixed(1) + "°C";
-        } else {
-          var start = 34.6;
-          var duration = 900;
-          var startTime = null;
-
-          function step(ts) {
-            if (startTime === null) startTime = ts;
-            var progress = Math.min((ts - startTime) / duration, 1);
-            var eased = 1 - Math.pow(1 - progress, 3);
-            var value = start - (start - target) * eased;
-            statEl.textContent = value.toFixed(1) + "°C";
-            if (progress < 1) {
-              window.requestAnimationFrame(step);
-            }
-          }
-          window.setTimeout(function () {
-            window.requestAnimationFrame(step);
-          }, 250);
-        }
       })();
     </script>
   </body>
