@@ -431,30 +431,75 @@
     <script>
       document
         .getElementById("addContact")
-        .addEventListener("click", function () {
-          fetch("./contact-a8f39b2c.vcf")
-            .then((response) => {
-              if (!response.ok) throw new Error("Network response was not ok");
-              return response.blob();
-            })
-            .then((blob) => {
-              const blobUrl = window.URL.createObjectURL(blob);
+        .addEventListener("click", function (e) {
+          e.preventDefault();
 
-              const link = document.createElement("a");
-              link.href = blobUrl;
-              link.download = "Serene Ho.vcf";
+          const vcfUrl = "./contact-a8f39b2c.vcf";
 
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
+          // Detect mobile user agents for direct redirection handling
+          const isMobile = /iPhone|iPad|iPod|Android/i.test(
+            navigator.userAgent
+          );
 
-              window.URL.revokeObjectURL(blobUrl);
-            })
-            .catch((error) => {
-              console.error("Download failed:", error);
-              window.location.href = "./contact-a8f39b2c.vcf";
-            });
+          if (isMobile) {
+            // On mobile (Android & iOS), direct navigation triggers the OS contact handler/download instantly
+            window.location.href = vcfUrl;
+          } else {
+            // On desktop, keep the fetch + blob method for clean background downloading
+            fetch(vcfUrl)
+              .then((response) => {
+                if (!response.ok)
+                  throw new Error("Network response was not ok");
+                return response.blob();
+              })
+              .then((blob) => {
+                const blobUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = blobUrl;
+                link.download = "Serene Ho.vcf";
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                window.URL.revokeObjectURL(blobUrl);
+              })
+              .catch((error) => {
+                console.error(
+                  "Blob download failed, falling back to direct navigation:",
+                  error
+                );
+                window.location.href = vcfUrl;
+              });
+          }
         });
+
+      // document
+      //   .getElementById("addContact")
+      //   .addEventListener("click", function () {
+      //     fetch("./contact-a8f39b2c.vcf")
+      //       .then((response) => {
+      //         if (!response.ok) throw new Error("Network response was not ok");
+      //         return response.blob();
+      //       })
+      //       .then((blob) => {
+      //         const blobUrl = window.URL.createObjectURL(blob);
+
+      //         const link = document.createElement("a");
+      //         link.href = blobUrl;
+      //         link.download = "Serene Ho.vcf";
+
+      //         document.body.appendChild(link);
+      //         link.click();
+      //         document.body.removeChild(link);
+
+      //         window.URL.revokeObjectURL(blobUrl);
+      //       })
+      //       .catch((error) => {
+      //         console.error("Download failed:", error);
+      //         window.location.href = "./contact-a8f39b2c.vcf";
+      //       });
+      //   });
 
       (function () {
         var link = document.getElementById("addContact");
